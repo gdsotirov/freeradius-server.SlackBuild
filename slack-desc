@@ -1,0 +1,12 @@
+freeradius-server: FreeRADIUS Server (the RADIUS server)
+freeradius-server:
+freeradius-server: FreeRADIUS is the most widely deployed RADIUS server in the
+freeradius-server: world.  It is the basis for multiple commercial offerings.
+freeradius-server: It supplies the AAA needs of many Fortune-500 companies and
+freeradius-server: Tier 1 ISPs.
+freeradius-server: It is also widely used for Enterprise Wi-Fi and IEEE 802.1X
+freeradius-server: network security, particularly in the academic community,
+freeradius-server: including eduroam.
+freeradius-server: The server is fast, feature-rich, modular, and scalable.
+freeradius-server:
+freeradius-server: Packaged by Georgi D. Sotirov <gdsotirov@dir.bg>
