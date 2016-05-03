@@ -1,0 +1,152 @@
+#!/bin/sh
+# Slackware build script for FreeRADIUS
+# Copyright (C) 2016 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Based on the original build script for the client by Patick Volkerding
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# 
+# Visit SlackPack at http://sotirov-bg.net/slackpack/
+#
+# $Id: freeradius-server.SlackBuild,v 1.1 2016/05/03 18:35:37 gsotirov Exp $
+#
+
+. ../slack-package.conf
+
+NAME=freeradius-server
+VERSION=2.1.8
+ARCH=${ARCH:-i486}
+BUILD=${BUILD:-1}
+
+TMP=${TMP:-/tmp}
+CWD=${CWD:-`pwd`}
+
+if [ ! -e $TMP ]; then
+  mkdir -p $TMP # location to build the source
+fi
+
+SRC=$TMP/$NAME-$VERSION
+if [ -e $SRC -a -d $SRC ]; then
+  echo "Source directory '$SRC' already exists! Plaese, move it or remove it."
+  exit 1
+fi
+
+PKG=$TMP/package-$NAME
+if [ -e $PKG -a -d $PKG ]; then
+  echo "Package creation directory '$PKG' already exists! Please, move it or remove it."
+  exit 2
+fi
+mkdir -p $PKG
+
+# Extract and fix source
+cd $TMP
+tar -xvf $CWD/$NAME-$VERSION.tar.?z* || exit 3
+cd $SRC
+fix_source
+
+if [ "$ARCH" == "i486" ]; then
+  EXTRA_CONFIG="--with-system-libtool"
+else
+  EXTRA_CONFIG=""
+fi
+
+# Configure
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLCKCFLAGS" \
+./configure --build=$ARCH-slackware-linux \
+            --host=$ARCH-slackware-linux \
+            --prefix=/usr \
+            --sysconfdir=/etc \
+            --localstatedir=/var \
+            --libdir=/usr/lib${LIBDIRSUFFIX} \
+            --mandir=/usr/man \
+            --with-docdir=/usr/doc/$NAME-$VERSION \
+            --disable-static \
+            $EXTRA_CONFIG || exit 4
+
+# Build & install
+make || exit 5
+make R=$PKG install || exit 6
+
+# Put rc.radiusd in the right place
+install -m 755 -d $PKG/etc/rc.d
+install -m 644 $SRC/scripts/rc.radiusd $PKG/etc/rc.d/rc.radiusd.new
+rm -f $PKG/usr/sbin/rc.radiusd
+
+# Rename config files
+(cd $PKG/etc/raddb;
+ mv certs/ca.cnf                      certs/ca.cnf.new;
+ mv certs/client.cnf                  certs/client.cnf.new;
+ mv certs/server.cnf                  certs/server.cnf.new;
+ mv clients.conf                      clients.conf.new;
+ mv eap.conf                          eap.conf.new;
+ mv experimental.conf                 experimental.conf.new;
+ mv policy.conf                       policy.conf.new;
+ mv proxy.conf                        proxy.conf.new;
+ mv radiusd.conf                      radiusd.conf.new;
+ mv sql.conf                          sql.conf.new;
+ mv sql/mssql/dialup.conf             sql/mssql/dialup.conf.new;
+ mv sql/mysql/counter.conf            sql/mysql/counter.conf.new;
+ mv sql/mysql/cui.conf                sql/mysql/cui.conf.new;
+ mv sql/mysql/dialup.conf             sql/mysql/dialup.conf.new;
+ mv sql/mysql/ippool.conf             sql/mysql/ippool.conf.new;
+ mv sql/mysql/wimax.conf              sql/mysql/wimax.conf.new;
+ mv sql/oracle/dialup.conf            sql/oracle/dialup.conf.new;
+ mv sql/oracle/ippool.conf            sql/oracle/ippool.conf.new;
+ mv sql/postgresql/counter.conf       sql/postgresql/counter.conf.new;
+ mv sql/postgresql/dialup.conf        sql/postgresql/dialup.conf.new;
+ mv sql/postgresql/ippool.conf        sql/postgresql/ippool.conf.new;
+ mv sql/postgresql/voip-postpaid.conf sql/postgresql/voip-postpaid.conf.new;
+ mv sqlippool.conf                    sqlippool.conf.new;
+ mv templates.conf                    templates.conf.new )
+
+# Prepare
+bin_perms $PKG
+sbin_perms $PKG
+( cd $PKG; strip_bin; strip_lib )
+gzip_man $PKG
+create_docs $PKG $NAME-$VERSION
+
+# Rename LICENSE to COPYING and provide symbolic link to it
+(cd $PKG/usr/doc/$NAME-$VERSION;
+ mv LICENSE COPYING;
+ ln -s COPYING LICENSE )
+
+mkdir -p $PKG/install
+install -m 644 $CWD/doinst.sh       $PKG/install/doinst.sh
+install -m 644 $CWD/slack-desc      $PKG/install/slack-desc
+install -m 644 $CWD/slack-required  $PKG/install/slack-required
+
+SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
+mkdir -p $PKG/usr/src/slackbuilds/$NAME-$VERSION
+install -m 644 $CWD/doinst.sh        $SBDIR/doinst.sh
+install -m 644 $CWD/slack-desc       $SBDIR/slack-desc
+install -m 644 $CWD/slack-required   $SBDIR/slack-required
+install -m 644 $CWD/$NAME.SlackBuild $SBDIR/$NAME.SlackBuild
+
+# Create package
+cd $PKG
+PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
+makepkg -l y -c n $PKG_DIR/$PKGNAME.txz
+( cd $PKG_DIR
+  md5sum $PKGNAME.txz > $PKGNAME.txz.md5
+  cat $PKG/install/slack-desc > $PKG_DIR/$PKGNAME.txt
+)
+
+# Clean up (optionally)
+if [ "$1" == "--cleanup" ]; then
+   rm -rf $TMP/$NAME-$VERSION
+   rm -rf $TMP/package-$NAME
+fi
+
