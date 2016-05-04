@@ -19,13 +19,13 @@
 # 
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
-# $Id: freeradius-server.SlackBuild,v 1.2 2016/05/03 19:09:36 gsotirov Exp $
+# $Id: freeradius-server.SlackBuild,v 1.3 2016/05/04 08:32:16 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=2.1.8
+VERSION=2.1.10
 ARCH=${ARCH:-i486}
 BUILD=${BUILD:-1}
 
@@ -56,7 +56,7 @@ cd $SRC
 fix_source
 
 if [ "$ARCH" == "i486" ]; then
-  EXTRA_CONFIG="--with-system-libtool"
+  EXTRA_CONFIG="--with-system-libtool --with-system-libltdl"
 else
   EXTRA_CONFIG=""
 fi
@@ -127,12 +127,14 @@ mkdir -p $PKG/install
 install -m 644 $CWD/doinst.sh       $PKG/install/doinst.sh
 install -m 644 $CWD/slack-desc      $PKG/install/slack-desc
 install -m 644 $CWD/slack-required  $PKG/install/slack-required
+install -m 644 $CWD/slack-suggests  $PKG/install/slack-suggests
 
 SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
 mkdir -p $PKG/usr/src/slackbuilds/$NAME-$VERSION
 install -m 644 $CWD/doinst.sh        $SBDIR/doinst.sh
 install -m 644 $CWD/slack-desc       $SBDIR/slack-desc
 install -m 644 $CWD/slack-required   $SBDIR/slack-required
+install -m 644 $CWD/slack-suggests   $SBDIR/slack-suggests
 install -m 644 $CWD/$NAME.SlackBuild $SBDIR/$NAME.SlackBuild
 
 # Create package
