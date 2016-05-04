@@ -1,2 +1,2 @@
-mysql >= 5.1.73
-openldap >= 2.4.21
+mysql >= 5.5.46
+openldap >= 2.4.23
