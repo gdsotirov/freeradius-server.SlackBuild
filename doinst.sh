@@ -37,3 +37,6 @@ config etc/raddb/sqlippool.conf.new
 config etc/raddb/templates.conf.new
 config etc/rc.d/rc.radiusd.new
 
+echo "NOTE: Please, run 'radiusd -X' after initial installation to verify the"
+echo "      installation and generate server certificates."
+
