@@ -19,13 +19,13 @@
 # 
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
-# $Id: freeradius-server.SlackBuild,v 1.5 2016/05/04 10:05:47 gsotirov Exp $
+# $Id: freeradius-server.SlackBuild,v 1.6 2016/05/04 13:36:52 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=2.2.9
+VERSION=3.0.11
 ARCH=${ARCH:-i486}
 BUILD=${BUILD:-1}
 
@@ -67,10 +67,20 @@ CXXFLAGS="$SLCKCFLAGS" \
             --localstatedir=/var \
             --libdir=/usr/lib${LIBDIRSUFFIX} \
             --mandir=/usr/man \
-            --with-docdir=/usr/doc/$NAME-$VERSION || exit 4
+            --with-docdir=/usr/doc/$NAME-$VERSION \
+            --with-ascend-binary \
+            --with-threads \
+            --with-tcp \
+            --with-vmps \
+            --with-dhcp \
+            --with-shared-libs \
+            --with-udpfromto \
+            --with-openssl \
+            --with-pcre \
+            --with-regex || exit 4
 
 # Build & install
-make || exit 5
+make -j4 || exit 5
 make R=$PKG install || exit 6
 
 # Put rc.radiusd in the right place
@@ -84,27 +94,44 @@ rm -f $PKG/usr/sbin/rc.radiusd
  mv certs/client.cnf                  certs/client.cnf.new;
  mv certs/server.cnf                  certs/server.cnf.new;
  mv clients.conf                      clients.conf.new;
- mv eap.conf                          eap.conf.new;
- mv experimental.conf                 experimental.conf.new;
- mv policy.conf                       policy.conf.new;
- mv proxy.conf                        proxy.conf.new;
- mv radiusd.conf                      radiusd.conf.new;
- mv sql.conf                          sql.conf.new;
- mv sql/mssql/dialup.conf             sql/mssql/dialup.conf.new;
- mv sql/mysql/counter.conf            sql/mysql/counter.conf.new;
- mv sql/mysql/cui.conf                sql/mysql/cui.conf.new;
- mv sql/mysql/dialup.conf             sql/mysql/dialup.conf.new;
- mv sql/mysql/ippool.conf             sql/mysql/ippool.conf.new;
- mv sql/mysql/wimax.conf              sql/mysql/wimax.conf.new;
- mv sql/oracle/dialup.conf            sql/oracle/dialup.conf.new;
- mv sql/oracle/ippool.conf            sql/oracle/ippool.conf.new;
- mv sql/postgresql/counter.conf       sql/postgresql/counter.conf.new;
- mv sql/postgresql/dialup.conf        sql/postgresql/dialup.conf.new;
- mv sql/postgresql/ippool.conf        sql/postgresql/ippool.conf.new;
- mv sql/postgresql/voip-postpaid.conf sql/postgresql/voip-postpaid.conf.new;
- mv sqlippool.conf                    sqlippool.conf.new;
- mv templates.conf                    templates.conf.new;
- mv users                             users.new )
+ mv experimental.conf                 experimental.conf.new )
+(cd $PKG/etc/raddb/mods-config/sql;
+ mv counter/mysql/dailycounter.conf           counter/mysql/dailycounter.conf.new;
+ mv counter/mysql/expire_on_login.conf        counter/mysql/expire_on_login.conf.new;
+ mv counter/mysql/monthlycounter.conf         counter/mysql/monthlycounter.conf.new;
+ mv counter/mysql/noresetcounter.conf         counter/mysql/noresetcounter.conf.new;
+ mv counter/postgresql/dailycounter.conf      counter/postgresql/dailycounter.conf.new;
+ mv counter/postgresql/expire_on_login.conf   counter/postgresql/expire_on_login.conf.new;
+ mv counter/postgresql/monthlycounter.conf    counter/postgresql/monthlycounter.conf.new;
+ mv counter/postgresql/noresetcounter.conf    counter/postgresql/noresetcounter.conf.new;
+ mv counter/sqlite/dailycounter.conf          counter/sqlite/dailycounter.conf.new;
+ mv counter/sqlite/expire_on_login.conf       counter/sqlite/expire_on_login.conf.new;
+ mv counter/sqlite/monthlycounter.conf        counter/sqlite/monthlycounter.conf.new;
+ mv counter/sqlite/noresetcounter.conf        counter/sqlite/noresetcounter.conf.new;
+ mv cui/mysql/queries.conf                    cui/mysql/queries.conf.new;
+ mv cui/postgresql/queries.conf               cui/postgresql/queries.conf.new;
+ mv cui/sqlite/queries.conf                   cui/sqlite/queries.conf.new;
+ mv ippool-dhcp/mysql/queries.conf            ippool-dhcp/mysql/queries.conf.new;
+ mv ippool-dhcp/oracle/queries.conf           ippool-dhcp/oracle/queries.conf.new;
+ mv ippool-dhcp/sqlite/queries.conf           ippool-dhcp/sqlite/queries.conf.new;
+ mv ippool/mysql/queries.conf                 ippool/mysql/queries.conf.new;
+ mv ippool/oracle/queries.conf                ippool/oracle/queries.conf.new;
+ mv ippool/postgresql/queries.conf            ippool/postgresql/queries.conf.new;
+ mv ippool/sqlite/queries.conf                ippool/sqlite/queries.conf.new;
+ mv main/mssql/queries.conf                   main/mssql/queries.conf.new;
+ mv main/mysql/extras/wimax/queries.conf      main/mysql/extras/wimax/queries.conf.new;
+ mv main/mysql/queries.conf                   main/mysql/queries.conf.new;
+ mv main/oracle/queries.conf                  main/oracle/queries.conf.new;
+ mv main/postgresql/extras/voip-postpaid.conf main/postgresql/extras/voip-postpaid.conf.new;
+ mv main/postgresql/queries.conf              main/postgresql/queries.conf.new;
+ mv main/sqlite/queries.conf                  main/sqlite/queries.conf.new )
+(cd $PKG/etc/raddb/mods-config/unbound;
+ mv default.conf default.conf.new )
+(cd $PKG/etc/raddb;
+ mv proxy.conf     proxy.conf.new;
+ mv radiusd.conf   radiusd.conf.new;
+ mv templates.conf templates.conf.new;
+ mv trigger.conf   trigger.conf.new )
 
 # Prepare
 bin_perms $PKG
