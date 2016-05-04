@@ -19,13 +19,13 @@
 # 
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
-# $Id: freeradius-server.SlackBuild,v 1.4 2016/05/04 09:07:55 gsotirov Exp $
+# $Id: freeradius-server.SlackBuild,v 1.5 2016/05/04 10:05:47 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=2.1.12
+VERSION=2.2.9
 ARCH=${ARCH:-i486}
 BUILD=${BUILD:-1}
 
@@ -55,25 +55,19 @@ tar -xvf $CWD/$NAME-$VERSION.tar.?z* || exit 3
 cd $SRC
 fix_source
 
-if [ "$ARCH" == "i486" ]; then
-  EXTRA_CONFIG="--with-system-libtool --with-system-libltdl"
-else
-  EXTRA_CONFIG=""
-fi
-
 # Configure
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLCKCFLAGS" \
 ./configure --build=$ARCH-slackware-linux \
             --host=$ARCH-slackware-linux \
+            --enable-shared=yes \
+            --enable-static=no \
             --prefix=/usr \
             --sysconfdir=/etc \
             --localstatedir=/var \
             --libdir=/usr/lib${LIBDIRSUFFIX} \
             --mandir=/usr/man \
-            --with-docdir=/usr/doc/$NAME-$VERSION \
-            --disable-static \
-            $EXTRA_CONFIG || exit 4
+            --with-docdir=/usr/doc/$NAME-$VERSION || exit 4
 
 # Build & install
 make || exit 5
@@ -109,7 +103,8 @@ rm -f $PKG/usr/sbin/rc.radiusd
  mv sql/postgresql/ippool.conf        sql/postgresql/ippool.conf.new;
  mv sql/postgresql/voip-postpaid.conf sql/postgresql/voip-postpaid.conf.new;
  mv sqlippool.conf                    sqlippool.conf.new;
- mv templates.conf                    templates.conf.new )
+ mv templates.conf                    templates.conf.new;
+ mv users                             users.new )
 
 # Prepare
 bin_perms $PKG
