@@ -35,6 +35,7 @@ config etc/raddb/sql/postgresql/ippool.conf.new
 config etc/raddb/sql/postgresql/voip-postpaid.conf.new
 config etc/raddb/sqlippool.conf.new
 config etc/raddb/templates.conf.new
+config etc/raddb/users.new
 config etc/rc.d/rc.radiusd.new
 
 echo "NOTE: Please, run 'radiusd -X' after initial installation to verify the"
