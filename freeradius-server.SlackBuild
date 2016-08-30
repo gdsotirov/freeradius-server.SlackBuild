@@ -19,14 +19,14 @@
 # 
 # Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
-# $Id: freeradius-server.SlackBuild,v 1.6 2016/05/04 13:36:52 gsotirov Exp $
+# $Id: freeradius-server.SlackBuild,v 1.7 2016/08/30 08:25:07 gsotirov Exp $
 #
 
 . ../../slack-package.conf
 
 NAME=freeradius-server
 VERSION=3.0.11
-ARCH=${ARCH:-i486}
+ARCH=${ARCH:-i586}
 BUILD=${BUILD:-1}
 
 TMP=${TMP:-/tmp}
@@ -80,7 +80,7 @@ CXXFLAGS="$SLCKCFLAGS" \
             --with-regex || exit 4
 
 # Build & install
-make -j4 || exit 5
+make -j || exit 5
 make R=$PKG install || exit 6
 
 # Put rc.radiusd in the right place
