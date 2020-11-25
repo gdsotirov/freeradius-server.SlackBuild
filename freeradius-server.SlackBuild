@@ -1,6 +1,6 @@
 #!/bin/sh
 # Slackware build script for FreeRADIUS
-# Copyright (C) 2016 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Copyright (C) 2016-2020 Georgi D. Sotirov <gdsotirov@gmail.com>
 # Based on the original build script for the client by Patick Volkerding
 #
 # This program is free software; you can redistribute it and/or
@@ -16,10 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-# 
-# Visit SlackPack at http://sotirov-bg.net/slackpack/
 #
-# $Id: freeradius-server.SlackBuild,v 1.7 2016/08/30 08:25:07 gsotirov Exp $
+# Visit SlackPack at https://sotirov-bg.net/slackpack/
 #
 
 . ../../slack-package.conf
