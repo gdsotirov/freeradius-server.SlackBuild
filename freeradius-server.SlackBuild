@@ -1,6 +1,6 @@
 #!/bin/sh
 # Slackware build script for FreeRADIUS
-# Copyright (C) 2016-2020 Georgi D. Sotirov <gdsotirov@gmail.com>
+# Copyright (C) 2016-2021 Georgi D. Sotirov <gdsotirov@dir.bg>
 # Based on the original build script for the client by Patick Volkerding
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=3.0.11
+VERSION=3.0.25
 ARCH=${ARCH:-i586}
 BUILD=${BUILD:-1}
 
@@ -34,13 +34,13 @@ if [ ! -e $TMP ]; then
   mkdir -p $TMP # location to build the source
 fi
 
-SRC=$TMP/$NAME-$VERSION
+SRC=$TMP/${NAME}-${VERSION}
 if [ -e $SRC -a -d $SRC ]; then
   echo "Source directory '$SRC' already exists! Plaese, move it or remove it."
   exit 1
 fi
 
-PKG=$TMP/package-$NAME
+PKG=$TMP/package-${NAME}
 if [ -e $PKG -a -d $PKG ]; then
   echo "Package creation directory '$PKG' already exists! Please, move it or remove it."
   exit 2
@@ -49,15 +49,15 @@ mkdir -p $PKG
 
 # Extract and fix source
 cd $TMP
-tar -xvf $CWD/$NAME-$VERSION.tar.?z* || exit 3
+tar -xvf $CWD/${NAME}-${VERSION}.tar.?z* || exit 3
 cd $SRC
 fix_source
 
 # Configure
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLCKCFLAGS" \
-./configure --build=$ARCH-slackware-linux \
-            --host=$ARCH-slackware-linux \
+./configure --build=${ARCH}-slackware-linux \
+            --host=${ARCH}-slackware-linux \
             --enable-shared=yes \
             --enable-static=no \
             --prefix=/usr \
@@ -65,7 +65,7 @@ CXXFLAGS="$SLCKCFLAGS" \
             --localstatedir=/var \
             --libdir=/usr/lib${LIBDIRSUFFIX} \
             --mandir=/usr/man \
-            --with-docdir=/usr/doc/$NAME-$VERSION \
+            --with-docdir=/usr/doc/${NAME}-${VERSION} \
             --with-ascend-binary \
             --with-threads \
             --with-tcp \
@@ -88,43 +88,63 @@ rm -f $PKG/usr/sbin/rc.radiusd
 
 # Rename config files
 (cd $PKG/etc/raddb;
- mv certs/ca.cnf                      certs/ca.cnf.new;
- mv certs/client.cnf                  certs/client.cnf.new;
- mv certs/server.cnf                  certs/server.cnf.new;
- mv clients.conf                      clients.conf.new;
- mv experimental.conf                 experimental.conf.new )
+ mv certs/ca.cnf            certs/ca.cnf.new;
+ mv certs/client.cnf        certs/client.cnf.new;
+ mv certs/inner-server.cnf  certs/inner-server.cnf;
+ mv certs/server.cnf        certs/server.cnf.new;
+ mv clients.conf            clients.conf.new;
+ mv experimental.conf	    experimental.conf.new )
+
 (cd $PKG/etc/raddb/mods-config/sql;
- mv counter/mysql/dailycounter.conf           counter/mysql/dailycounter.conf.new;
- mv counter/mysql/expire_on_login.conf        counter/mysql/expire_on_login.conf.new;
- mv counter/mysql/monthlycounter.conf         counter/mysql/monthlycounter.conf.new;
- mv counter/mysql/noresetcounter.conf         counter/mysql/noresetcounter.conf.new;
- mv counter/postgresql/dailycounter.conf      counter/postgresql/dailycounter.conf.new;
- mv counter/postgresql/expire_on_login.conf   counter/postgresql/expire_on_login.conf.new;
- mv counter/postgresql/monthlycounter.conf    counter/postgresql/monthlycounter.conf.new;
- mv counter/postgresql/noresetcounter.conf    counter/postgresql/noresetcounter.conf.new;
- mv counter/sqlite/dailycounter.conf          counter/sqlite/dailycounter.conf.new;
- mv counter/sqlite/expire_on_login.conf       counter/sqlite/expire_on_login.conf.new;
- mv counter/sqlite/monthlycounter.conf        counter/sqlite/monthlycounter.conf.new;
- mv counter/sqlite/noresetcounter.conf        counter/sqlite/noresetcounter.conf.new;
- mv cui/mysql/queries.conf                    cui/mysql/queries.conf.new;
- mv cui/postgresql/queries.conf               cui/postgresql/queries.conf.new;
- mv cui/sqlite/queries.conf                   cui/sqlite/queries.conf.new;
- mv ippool-dhcp/mysql/queries.conf            ippool-dhcp/mysql/queries.conf.new;
- mv ippool-dhcp/oracle/queries.conf           ippool-dhcp/oracle/queries.conf.new;
- mv ippool-dhcp/sqlite/queries.conf           ippool-dhcp/sqlite/queries.conf.new;
- mv ippool/mysql/queries.conf                 ippool/mysql/queries.conf.new;
- mv ippool/oracle/queries.conf                ippool/oracle/queries.conf.new;
- mv ippool/postgresql/queries.conf            ippool/postgresql/queries.conf.new;
- mv ippool/sqlite/queries.conf                ippool/sqlite/queries.conf.new;
- mv main/mssql/queries.conf                   main/mssql/queries.conf.new;
- mv main/mysql/extras/wimax/queries.conf      main/mysql/extras/wimax/queries.conf.new;
- mv main/mysql/queries.conf                   main/mysql/queries.conf.new;
- mv main/oracle/queries.conf                  main/oracle/queries.conf.new;
- mv main/postgresql/extras/voip-postpaid.conf main/postgresql/extras/voip-postpaid.conf.new;
- mv main/postgresql/queries.conf              main/postgresql/queries.conf.new;
- mv main/sqlite/queries.conf                  main/sqlite/queries.conf.new )
+ mv counter/mysql/dailycounter.conf               counter/mysql/dailycounter.conf.new;
+ mv counter/mysql/expire_on_login.conf            counter/mysql/expire_on_login.conf.new;
+ mv counter/mysql/monthlycounter.conf             counter/mysql/monthlycounter.conf.new;
+ mv counter/mysql/noresetcounter.conf             counter/mysql/noresetcounter.conf.new;
+ mv counter/mysql/weeklycounter.conf              counter/mysql/weeklycounter.conf.new;
+ mv counter/postgresql/dailycounter.conf          counter/postgresql/dailycounter.conf.new;
+ mv counter/postgresql/expire_on_login.conf       counter/postgresql/expire_on_login.conf.new;
+ mv counter/postgresql/monthlycounter.conf        counter/postgresql/monthlycounter.conf.new;
+ mv counter/postgresql/noresetcounter.conf        counter/postgresql/noresetcounter.conf.new;
+ mv counter/postgresql/weeklycounter.conf         counter/postgresql/weeklycounter.conf.new;
+ mv counter/sqlite/dailycounter.conf              counter/sqlite/dailycounter.conf.new;
+ mv counter/sqlite/expire_on_login.conf           counter/sqlite/expire_on_login.conf.new;
+ mv counter/sqlite/monthlycounter.conf            counter/sqlite/monthlycounter.conf.new;
+ mv counter/sqlite/noresetcounter.conf            counter/sqlite/noresetcounter.conf.new;
+ mv counter/sqlite/weeklycounter.conf             counter/sqlite/weeklycounter.conf.new;
+ mv cui/mysql/queries.conf                        cui/mysql/queries.conf.new;
+ mv cui/postgresql/queries.conf                   cui/postgresql/queries.conf.new;
+ mv cui/sqlite/queries.conf                       cui/sqlite/queries.conf.new;
+ mv dhcp/mssql/queries.conf                       dhcp/mssql/queries.conf.new;
+ mv dhcp/mysql/queries.conf                       dhcp/mysql/queries.conf.new;
+ mv dhcp/oracle/queries.conf                      dhcp/oracle/queries.conf.new;
+ mv dhcp/postgresql/queries.conf                  dhcp/postgresql/queries.conf.new;
+ mv dhcp/sqlite/queries.conf                      dhcp/sqlite/queries.conf.new;
+ mv ippool-dhcp/mssql/queries.conf                ippool-dhcp/mssql/queries.conf.new;
+ mv ippool-dhcp/mysql/queries.conf                ippool-dhcp/mysql/queries.conf.new;
+ mv ippool-dhcp/oracle/queries.conf               ippool-dhcp/oracle/queries.conf.new;
+ mv ippool-dhcp/postgresql/queries.conf           ippool-dhcp/postgresql/queries.conf.new;
+ mv ippool-dhcp/sqlite/queries.conf               ippool-dhcp/sqlite/queries.conf.new;
+ mv ippool/mongo/queries.conf                     ippool/mongo/queries.conf.new;
+ mv ippool/mssql/queries.conf                     ippool/mssql/queries.conf.new;
+ mv ippool/mysql/queries.conf                     ippool/mysql/queries.conf.new;
+ mv ippool/oracle/queries.conf                    ippool/oracle/queries.conf.new;
+ mv ippool/postgresql/queries.conf                ippool/postgresql/queries.conf.new;
+ mv ippool/sqlite/queries.conf                    ippool/sqlite/queries.conf.new;
+ mv main/mongo/queries.conf                       main/mongo/queries.conf.new;
+ mv main/mssql/queries.conf                       main/mssql/queries.conf.new;
+ mv main/mysql/extras/wimax/queries.conf          main/mysql/extras/wimax/queries.conf.new;
+ mv main/mysql/queries.conf                       main/mysql/queries.conf.new;
+ mv main/oracle/queries.conf                      main/oracle/queries.conf.new;
+ mv main/postgresql/extras/voip-postpaid.conf     main/postgresql/extras/voip-postpaid.conf.new;
+ mv main/postgresql/queries.conf                  main/postgresql/queries.conf.new;
+ mv moonshot-targeted-ids/mysql/queries.conf      moonshot-targeted-ids/mysql/queries.conf.new;
+ mv moonshot-targeted-ids/postgresql/queries.conf moonshot-targeted-ids/postgresql/queries.conf.new;
+ mv moonshot-targeted-ids/sqlite/queries.conf     moonshot-targeted-ids/sqlite/queries.conf.new;
+ mv main/sqlite/queries.conf                      main/sqlite/queries.conf.new )
+
 (cd $PKG/etc/raddb/mods-config/unbound;
- mv default.conf default.conf.new )
+ mv default.conf   default.conf.new )
+
 (cd $PKG/etc/raddb;
  mv proxy.conf     proxy.conf.new;
  mv radiusd.conf   radiusd.conf.new;
@@ -136,10 +156,10 @@ bin_perms $PKG
 sbin_perms $PKG
 ( cd $PKG; strip_bin; strip_lib )
 gzip_man $PKG
-create_docs $PKG $NAME-$VERSION
+create_docs $PKG ${NAME}-${VERSION}
 
 # Rename LICENSE to COPYING and provide symbolic link to it
-(cd $PKG/usr/doc/$NAME-$VERSION;
+(cd $PKG/usr/doc/${NAME}-${VERSION};
  mv LICENSE COPYING;
  ln -s COPYING LICENSE )
 
@@ -149,26 +169,26 @@ install -m 644 $CWD/slack-desc      $PKG/install/slack-desc
 install -m 644 $CWD/slack-required  $PKG/install/slack-required
 install -m 644 $CWD/slack-suggests  $PKG/install/slack-suggests
 
-SBDIR=$PKG/usr/src/slackbuilds/$NAME-$VERSION
-mkdir -p $PKG/usr/src/slackbuilds/$NAME-$VERSION
-install -m 644 $CWD/doinst.sh        $SBDIR/doinst.sh
-install -m 644 $CWD/slack-desc       $SBDIR/slack-desc
-install -m 644 $CWD/slack-required   $SBDIR/slack-required
-install -m 644 $CWD/slack-suggests   $SBDIR/slack-suggests
-install -m 644 $CWD/$NAME.SlackBuild $SBDIR/$NAME.SlackBuild
+SBDIR=$PKG/usr/src/slackbuilds/${NAME}-${VERSION}
+mkdir -p $PKG/usr/src/slackbuilds/${NAME}-${VERSION}
+install -m 644 $CWD/doinst.sh           $SBDIR/doinst.sh
+install -m 644 $CWD/slack-desc          $SBDIR/slack-desc
+install -m 644 $CWD/slack-required      $SBDIR/slack-required
+install -m 644 $CWD/slack-suggests      $SBDIR/slack-suggests
+install -m 644 $CWD/${NAME}.SlackBuild  $SBDIR/${NAME}.SlackBuild
 
 # Create package
 cd $PKG
-PKGNAME=$NAME-$VERSION-$ARCH-$BUILD$MYIN
-makepkg -l y -c n $PKG_DIR/$PKGNAME.txz
+PKGNAME=${NAME}-${VERSION}-${ARCH}-${BUILD}${MYIN}
+makepkg -l y -c n $PKG_DIR/${PKGNAME}.txz
 ( cd $PKG_DIR
-  md5sum $PKGNAME.txz > $PKGNAME.txz.md5
-  cat $PKG/install/slack-desc > $PKG_DIR/$PKGNAME.txt
+  md5sum ${PKGNAME}.txz > ${PKGNAME}.txz.md5
+  cat $PKG/install/slack-desc > $PKG_DIR/${PKGNAME}.txt
 )
 
 # Clean up (optionally)
 if [ "$1" == "--cleanup" ]; then
-   rm -rf $TMP/$NAME-$VERSION
-   rm -rf $TMP/package-$NAME
+   rm -rf $TMP/${NAME}-${VERSION}
+   rm -rf $TMP/package-${NAME}
 fi
 
