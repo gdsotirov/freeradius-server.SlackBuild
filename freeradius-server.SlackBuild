@@ -90,7 +90,7 @@ rm -f $PKG/usr/sbin/rc.radiusd
 (cd $PKG/etc/raddb;
  mv certs/ca.cnf            certs/ca.cnf.new;
  mv certs/client.cnf        certs/client.cnf.new;
- mv certs/inner-server.cnf  certs/inner-server.cnf;
+ mv certs/inner-server.cnf  certs/inner-server.cnf.new;
  mv certs/server.cnf        certs/server.cnf.new;
  mv clients.conf            clients.conf.new;
  mv experimental.conf	    experimental.conf.new )
