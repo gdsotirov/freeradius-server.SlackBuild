@@ -13,7 +13,7 @@ config() {
 
 config etc/raddb/certs/ca.cnf.new
 config etc/raddb/certs/client.cnf.new
-config etc/raddb/certs/inner-server.cnf
+config etc/raddb/certs/inner-server.cnf.new
 config etc/raddb/certs/server.cnf.new
 config etc/raddb/clients.conf.new
 config etc/raddb/experimental.conf.new
