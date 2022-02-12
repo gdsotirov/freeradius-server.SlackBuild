@@ -49,7 +49,7 @@ mkdir --parents $PKG
 
 # Extract and fix source
 cd $TMP
-tar -xvf $CWD/${NAME}-${VERSION}.tar.?z* || exit 3
+tar --extract --verbose --file=$CWD/${NAME}-${VERSION}.tar.gz || exit 3
 cd $SRC
 fix_source
 
