@@ -23,7 +23,7 @@
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=3.0.25
+VERSION=3.2.0
 ARCH=${ARCH:-i586}
 BUILD=${BUILD:-1}
 
@@ -49,15 +49,15 @@ mkdir --parents $PKG
 
 # Extract and fix source
 cd $TMP
-tar --extract --verbose --file=$CWD/${NAME}-${VERSION}.tar.gz || exit 3
+tar --extract --verbose --file=$CWD/${NAME}-${VERSION}.tar.bz2 || exit 3
 cd $SRC
 fix_source
 
 # Configure
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLCKCFLAGS" \
-./configure --build=${ARCH}-slackware-linux \
-            --host=${ARCH}-slackware-linux \
+./configure --build="${ARCH}-slackware-linux" \
+            --host="${ARCH}-slackware-linux" \
             --enable-shared=yes \
             --enable-static=no \
             --prefix=/usr \
