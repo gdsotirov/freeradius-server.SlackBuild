@@ -78,8 +78,9 @@ CXXFLAGS="$SLCKCFLAGS" \
             --with-regex || exit 4
 
 # Build & install
-make --jobs || exit 5
-make R=$PKG install || exit 6
+# Use LOCAL_CERT_PRODUCTS ?
+make ECHO=true Q='' --jobs || exit 5
+make ECHO=true Q='' R=$PKG install || exit 6
 
 # Put rc.radiusd in the right place
 install --mode 755 --directory $PKG/etc/rc.d
@@ -94,7 +95,7 @@ rm --force $PKG/usr/sbin/rc.radiusd
  mv certs/inner-server.cnf  certs/inner-server.cnf.new;
  mv certs/server.cnf        certs/server.cnf.new;
  mv clients.conf            clients.conf.new;
- mv experimental.conf	      experimental.conf.new )
+ mv experimental.conf       experimental.conf.new )
 
 (cd $PKG/etc/raddb/mods-config/sql;
  mv counter/mysql/dailycounter.conf               counter/mysql/dailycounter.conf.new;
