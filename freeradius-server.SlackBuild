@@ -1,6 +1,6 @@
 #!/bin/sh
 # Slackware build script for FreeRADIUS
-# Copyright (C) 2016-2023 Georgi D. Sotirov <gdsotirov@dir.bg>
+# Copyright (C) 2016-2024 Georgi D. Sotirov <gdsotirov@dir.bg>
 # Based on the original build script for the client by Patick Volkerding
 #
 # This program is free software; you can redistribute it and/or
@@ -23,7 +23,7 @@
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=3.2.3
+VERSION=3.2.4
 ARCH=${ARCH:-i586}
 BUILD=${BUILD:-1}
 
