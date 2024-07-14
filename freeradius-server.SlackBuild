@@ -23,7 +23,7 @@
 . ../../slack-package.conf
 
 NAME=freeradius-server
-VERSION=3.2.4
+VERSION=3.2.5
 ARCH=${ARCH:-i586}
 BUILD=${BUILD:-1}
 
